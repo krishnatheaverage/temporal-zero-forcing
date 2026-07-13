@@ -1,5 +1,7 @@
 # Temporal zero forcing
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21347118.svg)](https://doi.org/10.5281/zenodo.21347118)
+
 Research archive for *Zero forcing on temporal graphs: Layer-local and
 footprint-constrained dynamics* by Krishna Harish (Elkins High School,
 Missouri City, Texas, United States).
@@ -59,8 +61,10 @@ is `7035cd92c06c06b6fa2b1562d476a89ec541589162dad0811e6fedd5a70cfd45`.
 ## Citation
 
 Use the citation metadata supplied by GitHub or Zenodo for release `v1.0.0`.
-The version-specific DOI is added to this file and `CITATION.cff` when the
-Zenodo record is minted.
+The version-specific DOI is
+[`10.5281/zenodo.21347118`](https://doi.org/10.5281/zenodo.21347118). The
+all-versions concept DOI is
+[`10.5281/zenodo.21347117`](https://doi.org/10.5281/zenodo.21347117).
 
 ## Licensing
 

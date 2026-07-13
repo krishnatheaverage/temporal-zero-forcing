@@ -3,6 +3,11 @@
 This supplement accompanies *Zero forcing on temporal graphs: Layer-local and
 footprint-constrained dynamics* by Krishna Harish.
 
+Version 1.0.0 is permanently archived at
+[doi:10.5281/zenodo.21347118](https://doi.org/10.5281/zenodo.21347118). The
+development repository is available at
+<https://github.com/krishnatheaverage/temporal-zero-forcing>.
+
 ## Contents
 
 - `src/verify.py` implements the two synchronous temporal zero-forcing rules,
