@@ -1,0 +1,39 @@
+{
+  "creators": [
+    {
+      "name": "Harish, Krishna",
+      "affiliation": "Elkins High School, Missouri City, Texas, United States"
+    }
+  ],
+  "title": "Temporal zero forcing: Verification software and computational results",
+  "description": "Version 1.0.0 of the computational research archive accompanying the manuscript <i>Zero forcing on temporal graphs: Layer-local and footprint-constrained dynamics</i>. The archive contains a standard-library Python verifier and machine-readable CSV results. Running <code>python3 src/verify.py</code> enumerates seed sets, checks 127 predicted parameter values for temporal paths, cycles, trees, stars, and cliques, and exhaustively tests all 4,096 two-layer temporal graphs on four labeled vertices for dominance and footprint-constrained reversal invariance. These computations verify small instances and do not replace the mathematical proofs. This is an independent research archive and has not undergone peer review.",
+  "version": "1.0.0",
+  "publication_date": "2026-07-13",
+  "access_right": "open",
+  "upload_type": "software",
+  "license": "mit",
+  "language": "eng",
+  "keywords": [
+    "zero forcing",
+    "temporal graphs",
+    "graph theory",
+    "discrete mathematics",
+    "temporal networks",
+    "parameterized complexity",
+    "combinatorial optimization",
+    "exact algorithms",
+    "computational verification"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/krishnatheaverage/temporal-zero-forcing",
+      "relation": "isVersionOf",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/krishnatheaverage/temporal-zero-forcing/releases/tag/v1.0.0",
+      "relation": "isIdenticalTo",
+      "resource_type": "software"
+    }
+  ]
+}

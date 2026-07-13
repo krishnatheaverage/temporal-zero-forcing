@@ -1,0 +1,11 @@
+{
+  "archive_version": "1.0.0",
+  "formula_instances": 127,
+  "two_layer_schedules": 4096,
+  "two_layer_vertices": 4,
+  "properties_checked_exhaustively": [
+    "layer-local dominance over footprint-constrained forcing",
+    "footprint-constrained time-reversal invariance"
+  ],
+  "status": "passed"
+}

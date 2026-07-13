@@ -1,0 +1,7 @@
+Archive version: 1.0.0
+Test date: 2026-07-13
+Python: 3.13.7
+Minimum supported Python: 3.9
+Platform: macOS 26.5.1 (Build 25F80; arm64)
+Third-party packages: none
+Reproduction command: python3 src/verify.py

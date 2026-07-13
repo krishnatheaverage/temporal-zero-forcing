@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software or its computational results, please cite this archive."
+title: "Temporal zero forcing: Verification software and computational results"
+type: software
+authors:
+  - family-names: "Harish"
+    given-names: "Krishna"
+    affiliation: "Elkins High School, Missouri City, Texas, United States"
+repository-code: "https://github.com/krishnatheaverage/temporal-zero-forcing"
+url: "https://github.com/krishnatheaverage/temporal-zero-forcing"
+version: 1.0.0
+date-released: 2026-07-13
+license: MIT
+keywords:
+  - zero forcing
+  - temporal graphs
+  - graph theory
+  - discrete mathematics
+  - parameterized complexity
+  - computational verification

@@ -1,0 +1,128 @@
+family,n,lifetime,semantics,computed,formula,witness
+alternating_path,1,2,layer-local,1,1,0
+alternating_path,1,2,footprint-constrained,1,1,0
+alternating_path,2,2,layer-local,1,1,0
+alternating_path,2,2,footprint-constrained,1,1,0
+alternating_path,3,2,layer-local,1,1,0
+alternating_path,3,2,footprint-constrained,1,1,0
+alternating_path,4,2,layer-local,2,2,0 2
+alternating_path,4,2,footprint-constrained,2,2,0 3
+alternating_path,5,2,layer-local,2,2,0 2
+alternating_path,5,2,footprint-constrained,2,2,0 4
+alternating_path,6,2,layer-local,2,2,0 4
+alternating_path,6,2,footprint-constrained,2,2,0 5
+alternating_path,7,2,layer-local,2,2,0 4
+alternating_path,7,2,footprint-constrained,3,3,0 3 4
+alternating_path,8,2,layer-local,3,3,0 2 6
+alternating_path,8,2,footprint-constrained,3,3,0 5 6
+alternating_path,9,2,layer-local,3,3,0 2 6
+alternating_path,9,2,footprint-constrained,3,3,0 5 6
+alternating_path,10,2,layer-local,3,3,0 4 8
+alternating_path,10,2,footprint-constrained,4,4,0 3 4 9
+alternating_path,11,2,layer-local,3,3,0 4 8
+alternating_path,11,2,footprint-constrained,4,4,0 5 6 10
+alternating_path,12,2,layer-local,4,4,0 2 6 10
+alternating_path,12,2,footprint-constrained,4,4,0 5 6 11
+alternating_path,13,2,layer-local,4,4,0 2 6 10
+alternating_path,13,2,footprint-constrained,5,5,0 3 4 9 10
+alternating_path,14,2,layer-local,4,4,0 4 8 12
+alternating_path,14,2,footprint-constrained,5,5,0 5 6 11 12
+alternating_path,15,2,layer-local,4,4,0 4 8 12
+alternating_path,15,2,footprint-constrained,5,5,0 5 6 11 12
+alternating_path,16,2,layer-local,5,5,0 2 6 10 14
+alternating_path,16,2,footprint-constrained,6,6,0 3 4 9 10 15
+alternating_path,17,2,layer-local,5,5,0 2 6 10 14
+alternating_path,17,2,footprint-constrained,6,6,0 5 6 11 12 16
+alternating_path,18,2,layer-local,5,5,0 4 8 12 16
+alternating_path,18,2,footprint-constrained,6,6,0 5 6 11 12 17
+alternating_path,19,2,layer-local,5,5,0 4 8 12 16
+alternating_path,19,2,footprint-constrained,7,7,0 3 4 9 10 15 16
+alternating_path,20,2,layer-local,6,6,0 2 6 10 14 18
+alternating_path,20,2,footprint-constrained,7,7,0 5 6 11 12 17 18
+alternating_even_cycle,4,2,layer-local,1,1,0
+alternating_even_cycle,4,2,footprint-constrained,2,2,0 1
+alternating_even_cycle,6,2,layer-local,2,2,0 2
+alternating_even_cycle,6,2,footprint-constrained,2,2,0 5
+alternating_even_cycle,8,2,layer-local,2,2,0 4
+alternating_even_cycle,8,2,footprint-constrained,4,4,0 1 2 7
+alternating_even_cycle,10,2,layer-local,3,3,0 2 6
+alternating_even_cycle,10,2,footprint-constrained,4,4,0 1 5 6
+alternating_even_cycle,12,2,layer-local,3,3,0 4 8
+alternating_even_cycle,12,2,footprint-constrained,4,4,0 5 6 11
+alternating_even_cycle,14,2,layer-local,4,4,0 2 6 10
+alternating_even_cycle,14,2,footprint-constrained,6,6,0 1 2 7 8 13
+alternating_even_cycle,16,2,layer-local,4,4,0 4 8 12
+alternating_even_cycle,16,2,footprint-constrained,6,6,0 1 5 6 11 12
+alternating_even_cycle,18,2,layer-local,5,5,0 2 6 10 14
+alternating_even_cycle,18,2,footprint-constrained,6,6,0 5 6 11 12 17
+alternating_even_cycle,20,2,layer-local,5,5,0 4 8 12 16
+alternating_even_cycle,20,2,footprint-constrained,8,8,0 1 2 7 8 13 14 19
+alternating_even_cycle,22,2,layer-local,6,6,0 2 6 10 14 18
+alternating_even_cycle,22,2,footprint-constrained,8,8,0 1 5 6 11 12 17 18
+binomial_temporal_tree_forward,2,1,layer-local,1,1,0
+binomial_temporal_tree_forward,2,1,footprint-constrained,1,1,0
+binomial_temporal_tree_reversed,2,1,layer-local,1,1,0
+binomial_temporal_tree_reversed,2,1,footprint-constrained,1,1,0
+binomial_temporal_tree_forward,4,2,layer-local,1,1,0
+binomial_temporal_tree_forward,4,2,footprint-constrained,2,2,0 1
+binomial_temporal_tree_reversed,4,2,layer-local,2,2,0 1
+binomial_temporal_tree_reversed,4,2,footprint-constrained,2,2,0 1
+binomial_tree_footprint,4,2,static,1,1,2
+binomial_temporal_tree_forward,8,3,layer-local,1,1,0
+binomial_temporal_tree_forward,8,3,footprint-constrained,4,4,0 1 2 3
+binomial_temporal_tree_reversed,8,3,layer-local,4,4,0 1 2 3
+binomial_temporal_tree_reversed,8,3,footprint-constrained,4,4,0 1 2 3
+binomial_tree_footprint,8,3,static,2,2,4 5
+binomial_temporal_tree_forward,16,4,layer-local,1,1,0
+binomial_temporal_tree_forward,16,4,footprint-constrained,8,8,0 1 2 3 4 5 6 7
+binomial_temporal_tree_reversed,16,4,layer-local,8,8,0 1 2 3 4 5 6 7
+binomial_temporal_tree_reversed,16,4,footprint-constrained,8,8,0 1 2 3 4 5 6 7
+binomial_tree_footprint,16,4,static,4,4,8 9 10 11
+serialized_star,3,2,layer-local,1,1,0
+serialized_star,3,2,footprint-constrained,1,1,1
+serialized_star_footprint,3,2,static,1,1,1
+serialized_star,4,3,layer-local,1,1,0
+serialized_star,4,3,footprint-constrained,2,2,1 2
+serialized_star_footprint,4,3,static,2,2,1 2
+serialized_star,5,4,layer-local,1,1,0
+serialized_star,5,4,footprint-constrained,3,3,1 2 3
+serialized_star_footprint,5,4,static,3,3,1 2 3
+serialized_star,6,5,layer-local,1,1,0
+serialized_star,6,5,footprint-constrained,4,4,1 2 3 4
+serialized_star_footprint,6,5,static,4,4,1 2 3 4
+serialized_star,7,6,layer-local,1,1,0
+serialized_star,7,6,footprint-constrained,5,5,1 2 3 4 5
+serialized_star_footprint,7,6,static,5,5,1 2 3 4 5
+serialized_star,8,7,layer-local,1,1,0
+serialized_star,8,7,footprint-constrained,6,6,1 2 3 4 5 6
+serialized_star_footprint,8,7,static,6,6,1 2 3 4 5 6
+serialized_star,9,8,layer-local,1,1,0
+serialized_star,9,8,footprint-constrained,7,7,1 2 3 4 5 6 7
+serialized_star_footprint,9,8,static,7,7,1 2 3 4 5 6 7
+serialized_star,10,9,layer-local,1,1,0
+serialized_star,10,9,footprint-constrained,8,8,1 2 3 4 5 6 7 8
+serialized_star_footprint,10,9,static,8,8,1 2 3 4 5 6 7 8
+serialized_star,11,10,layer-local,1,1,0
+serialized_star,11,10,footprint-constrained,9,9,1 2 3 4 5 6 7 8 9
+serialized_star_footprint,11,10,static,9,9,1 2 3 4 5 6 7 8 9
+serialized_star,12,11,layer-local,1,1,0
+serialized_star,12,11,footprint-constrained,10,10,1 2 3 4 5 6 7 8 9 10
+serialized_star_footprint,12,11,static,10,10,1 2 3 4 5 6 7 8 9 10
+completed_serialized_clique,3,3,layer-local,1,1,0
+completed_serialized_clique,3,3,footprint-constrained,2,2,0 1
+completed_serialized_clique_footprint,3,3,static,2,2,0 1
+completed_serialized_clique,4,6,layer-local,1,1,0
+completed_serialized_clique,4,6,footprint-constrained,3,3,0 1 2
+completed_serialized_clique_footprint,4,6,static,3,3,0 1 2
+completed_serialized_clique,5,10,layer-local,1,1,0
+completed_serialized_clique,5,10,footprint-constrained,4,4,0 1 2 3
+completed_serialized_clique_footprint,5,10,static,4,4,0 1 2 3
+completed_serialized_clique,6,15,layer-local,1,1,0
+completed_serialized_clique,6,15,footprint-constrained,5,5,0 1 2 3 4
+completed_serialized_clique_footprint,6,15,static,5,5,0 1 2 3 4
+completed_serialized_clique,7,21,layer-local,1,1,0
+completed_serialized_clique,7,21,footprint-constrained,6,6,0 1 2 3 4 5
+completed_serialized_clique_footprint,7,21,static,6,6,0 1 2 3 4 5
+completed_serialized_clique,8,28,layer-local,1,1,0
+completed_serialized_clique,8,28,footprint-constrained,7,7,0 1 2 3 4 5 6
+completed_serialized_clique_footprint,8,28,static,7,7,0 1 2 3 4 5 6

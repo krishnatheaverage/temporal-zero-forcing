@@ -1,0 +1,720 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{hidelinks}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calK}{\mathcal{K}}
+\newcommand{\LL}{\mathrm{LL}}
+\newcommand{\FC}{\mathrm{FC}}
+\newcommand{\rev}{\operatorname{rev}}
+
+\title{Zero forcing on temporal graphs:\\
+Layer-local and footprint-constrained dynamics}
+\author{Krishna Harish\\
+Elkins High School, Missouri City, Texas, USA}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Zero forcing is a graph-coloring process in which a blue vertex with a unique
+white neighbor forces that neighbor to blue.  The standard process assumes a
+fixed graph, whereas many communication, interaction, and control networks
+change over time.  We study two synchronous finite-lifetime extensions to a
+temporal graph.  In \emph{layer-local temporal zero forcing}, uniqueness is
+evaluated in the current layer.  In \emph{footprint-constrained temporal zero
+forcing}, uniqueness is evaluated in the aggregate footprint while the
+forcing edge must be currently active.  The distinction changes the process
+fundamentally: layer-local forces may branch over time, while
+footprint-constrained forces form vertex-disjoint chains.
+
+We prove sharp universal growth bounds, dominance and reversal results, and
+exact formulas for alternating temporal paths and even cycles.  These formulas
+give linear separations between the two temporal parameters and ordinary zero
+forcing of the aggregate graph.  A temporal-tree family shows that static
+aggregation can overestimate layer-local forcing by a linear factor and that
+reversing the layers can change the layer-local number by a factor linear in
+the order; the footprint-constrained number is invariant under reversal.  We
+also prove that layer-local temporal zero forcing is NP-complete and
+W[2]-hard by seed budget even when every layer is a star, every edge appears
+once, and the footprint is bipartite.  Finally, the growth bounds yield
+fixed-parameter algorithms parameterized by seed budget and lifetime.
+Exhaustive computations verify all closed forms on small instances.
+\end{abstract}
+
+\section{Introduction}
+
+Zero forcing was introduced as a combinatorial tool for minimum-rank
+problems and has subsequently been connected with graph searching,
+propagation, and network controllability~\cite{aim2008,yang2013,fallat2016,
+monshizadeh2014}.  Starting
+from an initial set of blue vertices, the color-change rule repeatedly allows
+a blue vertex with exactly one white neighbor to color that neighbor blue.
+The minimum size of an initial set that eventually colors the graph is the
+zero-forcing number.
+
+The static graph assumption is restrictive when edges represent contacts or
+communication opportunities.  Temporal-graph models retain the order in
+which edges are available, and temporal order can change reachability,
+influence, and controllability even when the aggregate graph is unchanged
+~\cite{casteigts2012}.
+Existing work has temporalized target-set selection~\cite{schierreich2023},
+compared temporal and aggregate influence~\cite{michalski2014}, minimized
+temporal source sets~\cite{yadav2026}, and studied controllability of
+time-varying networks~\cite{srighakollapu2022,mousavi2021,yao2017}.
+Applying the unique-white-neighbor rule to temporal layers introduces an
+additional modeling choice: should
+uniqueness be evaluated among currently active neighbors or among all
+neighbors that can ever appear?
+
+We formalize both choices.  The layer-local rule evaluates uniqueness in the
+current layer.  It models a source whose ambiguity is limited to its current
+contacts.  The footprint-constrained rule evaluates uniqueness in the
+aggregate footprint and then requires the unique remaining edge to be active.
+It models a temporally scheduled version of a valid static zero-forcing
+deduction.  The two rules agree on neither their growth mechanism nor their
+response to aggregation and time reversal.
+
+Our contributions are as follows.
+
+\begin{enumerate}[leftmargin=*]
+  \item We prove
+  \[
+    Z_{\LL}(\calG)\le Z_{\FC}(\calG),\qquad
+    Z_{\LL}(\calG)\ge \left\lceil\frac{n}{2^T}\right\rceil,
+    \qquad
+    Z_{\FC}(\calG)\ge
+    \max\left\{Z(H),\left\lceil\frac{n}{T+1}\right\rceil\right\},
+  \]
+  where $T$ is the lifetime and $H$ is the footprint.  Both growth bounds
+  are sharp.
+  \item For the two-layer alternating path $\calP_n$ and even cycle
+  $\calC_n$, we determine both parameters exactly:
+  \[
+  Z_{\LL}(\calP_n)=\left\lfloor\frac n4\right\rfloor+1,
+  \quad Z_{\FC}(\calP_n)=\left\lceil\frac n3\right\rceil,
+  \]
+  and
+  \[
+  Z_{\LL}(\calC_n)=\left\lceil\frac n4\right\rceil,
+  \quad Z_{\FC}(\calC_n)=2\left\lceil\frac n6\right\rceil.
+  \]
+  \item We construct a temporal tree on $n=2^T$ vertices for which the
+  forward layer-local number is $1$, the footprint-constrained number is
+  $n/2$, and the layer-local number after reversing time is $n/2$.
+  Meanwhile, the static zero-forcing number of the footprint is $n/4$.
+  Thus the family gives linear additive aggregation errors in both
+  directions.  Together with the alternating paths, it shows that either
+  multiplicative error can grow linearly with $n$.
+  \item We prove footprint-constrained forcing is invariant under reversing
+  the layer order, in contrast to the unbounded directional asymmetry of the
+  layer-local rule.
+  \item We establish restricted NP-completeness and W[2]-hardness for the
+  layer-local problem through an additive optimum-preserving reduction from Set
+  Cover, and derive fixed-parameter algorithms from the two growth laws.
+\end{enumerate}
+
+\section{Related work and prior-art boundary}
+
+Standard zero forcing and its minimum-rank origin are developed in
+\cite{aim2008}.  Parallel rounds and propagation time on a fixed graph are
+studied in~\cite{hogben2012}, and recent work has introduced relaxed
+chronologies and parallel increasing path covers~\cite{hogben2025}.  We
+therefore avoid using ``chronological zero forcing'' as the name of the new
+parameters: chronology is already established terminology in the static
+literature.
+
+A closely related temporal diffusion model is temporal target-set selection.  Its
+update is centered on the target: a vertex activates when sufficiently many
+of its current neighbors are active~\cite{schierreich2023}.  Our condition is
+centered on the source: a blue source can act only when it has a unique white
+neighbor.  Minimum temporal source sets based on time-respecting
+reachability~\cite{yadav2026} likewise do not depend on the colors of a
+source's other neighbors.
+
+There is also a close structural boundary with temporal path covers.  Every
+footprint-constrained process, after one parent is selected for each newly
+blue vertex, decomposes into vertex-disjoint strict temporal paths.  Temporal
+path-cover problems optimize path collections subject to temporal
+reachability or disjointness~\cite{chakraborty2024,cioni2026}; an arbitrary
+temporal path cover need not satisfy the footprint-uniqueness condition that
+makes a path a valid forcing chain.  The footprint-constrained parameter can
+thus be viewed as a uniqueness-constrained temporal path-cover number, not a reformulation of the
+unconstrained path-cover problems.
+
+Temporal controllability is a mature adjacent literature.  In particular,
+zero forcing has already been used for time-varying structural
+perturbations~\cite{mousavi2021}, and direct graph conditions and input-set
+optimization are known for temporal strong structural
+controllability~\cite{srighakollapu2022}.  We make no claim here that either
+temporal color process characterizes a previously studied matrix class.
+
+The one-layer boundary is also known under different language.  If $W$ is
+the set left white initially, one synchronous layer succeeds exactly when
+every $w\in W$ has an external private neighbor.  Writing
+$\operatorname{OIR}(G)$ for the maximum cardinality of an open irredundant
+set, this gives the exact identity
+\[
+ Z_{\LL}((V,E_1))=|V|-\operatorname{OIR}(G_1).
+\]
+Open irredundance and its upper parameter are studied in
+\cite{fellows1994}.  Similarly, integer programming for bounded-time static
+zero forcing predates the present temporal model~\cite{brimkov2019}.  Our
+complexity contribution therefore uses a multi-layer temporal sequence in
+which each edge appears exactly once.
+
+\section{Definitions}
+
+All graphs are finite, simple, and undirected.  A temporal graph is an ordered
+tuple
+\[
+  \calG=(V,E_1,\ldots,E_T),
+\]
+where $G_t=(V,E_t)$ is the layer at time $t$.  The lifetime is $T$, and the
+\emph{footprint} is
+\[
+  H=\left(V,\bigcup_{t=1}^T E_t\right).
+\]
+Colors persist.  If $B\subseteq V$ is the blue set immediately before layer
+$t$, define
+\begin{align*}
+F_t^{\LL}(B)
+ &=\left\{v\notin B:
+ \exists u\in B, uv\in E_t,
+ N_{G_t}(u)\setminus B=\{v\}\right\},\\
+F_t^{\FC}(B)
+ &=\left\{v\notin B:
+ \exists u\in B, uv\in E_t,
+ N_H(u)\setminus B=\{v\}\right\}.
+\end{align*}
+For $X\in\{\LL,\FC\}$, the synchronous process from a seed set $S$ is
+\[
+ B_0^X=S,
+ \qquad B_t^X=B_{t-1}^X\cup F_t^X(B_{t-1}^X).
+\]
+Eligibility is always evaluated using $B_{t-1}^X$; newly blue vertices cannot
+force until the next layer.
+
+\begin{definition}
+A set $S\subseteq V$ is an $X$-temporal zero-forcing set if $B_T^X=V$.
+The minimum cardinality of such a set is $Z_X(\calG)$.
+\end{definition}
+
+If several sources can force the same target in one round, the target is
+colored once.  When a parent relation is needed, we choose one valid source.
+
+\section{General structure and sharp growth bounds}
+
+\begin{proposition}[Dominance]\label{prop:dominance}
+For every temporal graph $\calG$,
+\[
+ Z_{\LL}(\calG)\le Z_{\FC}(\calG).
+\]
+\end{proposition}
+
+\begin{proof}
+Run both processes from the same seed set.  We prove inductively that
+$B_t^{\FC}\subseteq B_t^{\LL}$.  Suppose $u$ footprint-forces $v$ at time
+$t$.  Every footprint neighbor of $u$ other than $v$ is already blue in the
+footprint process and hence, by induction, in the layer-local process.  If
+$v$ is not already layer-locally blue, it is the unique white neighbor of
+$u$ in $G_t$ and is forced there as well.  Thus every footprint-constrained
+forcing set is layer-local.
+\end{proof}
+
+\begin{theorem}[Growth dichotomy]\label{thm:growth}
+If $|V|=n$ and $\calG$ has lifetime $T$, then
+\[
+ Z_{\LL}(\calG)\ge \left\lceil\frac{n}{2^T}\right\rceil
+\]
+and
+\[
+ Z_{\FC}(\calG)\ge
+ \max\left\{Z(H),\left\lceil\frac{n}{T+1}\right\rceil\right\}.
+\]
+Both lifetime-dependent bounds are attained for infinitely many orders.
+\end{theorem}
+
+\begin{proof}
+In a layer-local round each blue vertex has at most one unique white
+neighbor, so at most $|B_{t-1}^{\LL}|$ vertices are added.  Hence
+$|B_t^{\LL}|\le 2|B_{t-1}^{\LL}|$ and
+$n\le 2^T|S|$.
+
+In the footprint-constrained process, a vertex can force at most once over
+the entire lifetime.  Immediately after it forces its unique footprint-white
+neighbor, every one of its footprint neighbors is blue permanently.  After
+choosing one parent for every newly blue vertex, the forces therefore form
+vertex-disjoint directed paths rooted at the seeds.  Time labels increase
+strictly along each path, so a path contains at most $T+1$ vertices.  Thus
+$n\le (T+1)|S|$.  Moreover, every footprint-constrained force is a valid
+ordinary zero-forcing move in $H$, so $S$ is a static zero-forcing set and
+$|S|\ge Z(H)$.
+
+The layer-local bound is attained by the binomial temporal trees in
+Section~\ref{sec:tree}.  The footprint bound is attained by disjoint
+$(T+1)$-vertex paths whose successive edges appear at times $1,\ldots,T$.
+\end{proof}
+
+\section{Exact alternating paths and cycles}\label{sec:exact}
+
+Let $P_n$ have vertices $1,\ldots,n$ in order.  Define the two-layer temporal
+path $\calP_n$ by
+\[
+ E_1=\{(1,2),(3,4),\ldots\},
+ \qquad
+ E_2=\{(2,3),(4,5),\ldots\}.
+\]
+
+\begin{theorem}[Alternating paths]\label{thm:path}
+For every $n\ge1$,
+\[
+ Z_{\LL}(\calP_n)=\left\lfloor\frac n4\right\rfloor+1,
+ \qquad
+ Z_{\FC}(\calP_n)=\left\lceil\frac n3\right\rceil.
+\]
+\end{theorem}
+
+\begin{proof}
+For the layer-local rule, let
+$Q_k=\{2k-1,2k\}\cap[n]$.  A seed in $Q_k$ makes its first-layer pair blue
+and can then expand across both adjacent second-layer edges.  Its complete
+reach is
+\[
+ I_k=\{2k-2,2k-1,2k,2k+1\}\cap[n].
+\]
+Because both layers are matchings, multiple seeds color exactly the union of
+their intervals $I_k$.  Each interval contains at most four vertices, so
+$\lceil n/4\rceil$ seeds are necessary.  When $n=4a$, vertex $1$ belongs
+only to the three-vertex interval $I_1$; consequently $a$ intervals cover at
+most $3+4(a-1)=n-1$ vertices.  This handles $n\equiv0\pmod4$; combined with
+$\lceil n/4\rceil$ for the other residues, it gives
+$\lfloor n/4\rfloor+1$ in every case.  For the upper bound, write
+$n=4a+r$.  If $r=0$, use the interval indices
+$\{1,3,\ldots,2a-1,2a\}$; if $r\in\{1,2,3\}$, use
+$\{1,3,\ldots,2a+1\}$.  (For $a=0$, the latter set is $\{1\}$.)  These
+intervals cover $[n]$ with exactly
+$\lfloor n/4\rfloor+1$ choices; seed any vertex of the corresponding $Q_k$.
+
+For the footprint-constrained rule, Theorem~\ref{thm:growth} with $T=2$
+gives the lower bound $\lceil n/3\rceil$; the cases $n\le2$ are direct.  For
+the upper bound, partition the first $3q$ vertices into triples
+$D_j=\{3j-2,3j-1,3j\}$.  If $j$ is odd, seed $3j-2$; if $j$ is even, seed
+$3j$.  For an internal odd block, the left neighbor outside the block is the
+root of the preceding even block and is already blue; hence the odd root has
+its middle vertex as unique white footprint neighbor and forces rightward in
+layers $1$ and $2$.  Symmetrically, an internal even root is supported by the
+root of the following odd block and forces leftward.  Endpoint blocks need no
+outside support.  Thus $q$ seeds color the first $3q$ vertices when
+$n=3q$.  If $n=3q+1$, seed $n$; this also supports a final even block.  If
+$n=3q+2$ and $q$ is even, seed $n-1$: it supports the final even root and
+forces $n$ in layer $1$.  If $q$ is odd, seed $n$, which forces $n-1$ in
+layer $2$.  These constructions use exactly $\lceil n/3\rceil$ seeds.
+\end{proof}
+
+Since the footprint of $\calP_n$ is $P_n$ and $Z(P_n)=1$, both temporal
+parameters exceed their aggregate static counterpart by a linear factor.
+The two temporal semantics themselves differ by $n/12+O(1)$.
+
+For even $n\ge4$, define $\calC_n$ by placing alternating perfect matchings
+of $C_n$ in its two layers.
+
+\begin{theorem}[Alternating even cycles]\label{thm:cycle}
+For even $n\ge4$,
+\[
+ Z_{\LL}(\calC_n)=\left\lceil\frac n4\right\rceil,
+ \qquad
+ Z_{\FC}(\calC_n)=2\left\lceil\frac n6\right\rceil.
+\]
+\end{theorem}
+
+\begin{proof}
+The case $n=4$ follows directly, so assume $n\ge6$.  For layer-local forcing,
+each seed in a first-layer pair reaches a cyclic arc
+of four vertices.  Hence at least $\lceil n/4\rceil$ seeds are necessary.
+Selecting alternating first-layer pairs covers the cycle with exactly that
+many arcs.
+
+For the footprint-constrained upper bound, regard the $n/2$ second-layer
+edges as cyclic blocks.  Seed both endpoints of every block in a minimum
+dominating set of this block cycle.  In round one, the endpoints of a selected
+block force their outside first-layer neighbors.  In round two, those newly
+blue vertices force the as-yet-uncolored endpoints of the two adjacent
+second-layer blocks.  Thus a selected block covers itself and its two
+neighboring blocks, using
+$2\lceil(n/2)/3\rceil=2\lceil n/6\rceil$ seeds.
+
+The chain bound gives $n\le3|S|$.  It remains only to exclude the odd value
+$|S|=2q+1$ when $n=6q+2$.  Let $f$ be the number of distinct vertices added
+in round one.  Since $E_1$ is a matching, $f$ is also the number of seeds
+that force in that round.  If
+$f\le |S|-2$, then before round two there are $|S|+f$ blue vertices, but the
+$f$ first-round sources can never force again under the footprint-constrained
+rule.  Hence at most $|S|$ vertices can force in round two, and
+$n\le |S|+f+|S|\le3|S|-2$.  Equality $f=|S|$ would require every seed to
+have exactly one blue cycle neighbor, so the seed-induced subgraph would be
+a disjoint union of edges and $|S|$ would be even.  If $f=|S|-1$, let $x$ be
+the unique first-round nonforcer.  If $x$ has no blue cycle neighbor, its
+$E_1$ neighbor cannot become blue in round one and its only possible
+unique-white edge is unavailable in round two.  If $x$ has two blue
+neighbors, it has no white neighbor.  If it has one blue neighbor, then every
+seed has degree one in the seed-induced subgraph, which would be 1-regular
+and would force $|S|$ to be even.  Hence $x$ cannot force in round two, so the
+second round adds at most $|S|-1$ vertices and again
+$n\le3|S|-2$.  Thus $n=6q+2$ requires at least $2q+2$ seeds, completing all
+residue classes.
+\end{proof}
+
+\section{Aggregation, semantics, and time reversal}\label{sec:tree}
+
+We next give one family witnessing three distinct failures of a static-only
+view.  Start with $V_0=\{r\}$.  At time $t$, create one fresh child
+$u^{(t)}$ for every $u\in V_{t-1}$, put
+\[
+ L_t=\{u^{(t)}:u\in V_{t-1}\},\quad
+ E_t=\{uu^{(t)}:u\in V_{t-1}\},\quad
+ V_t=V_{t-1}\cup L_t.
+\]
+Let $\calB_T$ be the resulting temporal graph and $H_T$ its footprint.  Each
+layer is a matching, $H_T$ is a tree, and $|V_T|=2^T=n$.
+
+\begin{theorem}[Binomial temporal tree]\label{thm:binomial}
+For $T\ge2$,
+\[
+ Z_{\LL}(\calB_T)=1,
+ \qquad
+ Z_{\FC}(\calB_T)=\frac n2,
+ \qquad
+ Z(H_T)=\frac n4.
+\]
+If the layers are reversed, then
+\[
+ Z_{\LL}(\rev(\calB_T))=\frac n2.
+\]
+\end{theorem}
+
+\begin{proof}
+Seed $r$.  Inductively, all of $V_{t-1}$ is blue before layer $t$, and every
+blue vertex has exactly one current white neighbor, its new child.  Thus
+$Z_{\LL}(\calB_T)=1$.
+
+In the first layer of the reversed process, $E_T$ is a perfect matching
+between $V_{T-1}$ and the leaves $L_T$.  If an edge has neither endpoint
+seeded, its leaf can never be colored because the edge never reappears.
+Therefore every reversed layer-local forcing set has at least
+$|E_T|=n/2$ vertices.  Seeding all leaves $L_T$ colors their parents in the
+first reversed round and hence colors the whole graph.  The same leaf set is
+valid footprint-constrained, while Proposition~\ref{prop:dominance} supplies
+the lower bound.  For the footprint-constrained forward lower bound, every
+forcing chain contains at most one vertex of $L_T$: the sole incident edge of
+such a leaf has label $T$, while labels increase strictly along a chain.
+Since $|L_T|=n/2$, at least $n/2$ chains and hence seeds are required.
+Directly, seeding $V_{T-1}$ lets every old vertex force its time-$T$ child,
+proving equality.
+
+The leaves of $H_T$ are exactly $L_T$, so there are $n/2$ of them.  Static
+forcing chains form vertex-disjoint paths, each containing at most two tree
+leaves, and therefore $Z(H_T)\ge n/4$.  For the reverse inequality, seed the
+time-$T$ child of every vertex in $V_{T-2}$.  These leaves force
+$V_{T-2}$; those vertices then force their time-$(T-1)$ children; finally the
+time-$(T-1)$ children force their own time-$T$ children.  The seed set has
+$|V_{T-2}|=n/4$ vertices.
+\end{proof}
+
+Together with Theorem~\ref{thm:path}, the family shows that static
+aggregation can either underestimate or overestimate layer-local temporal
+zero forcing by $\Theta(n)$.
+
+An even simpler family gives the largest possible order of overestimation up
+to an additive constant.
+
+\begin{proposition}[Serialized stars]\label{prop:star}
+Let $\calS_n$ be the temporal star with center $c$, leaves
+$v_1,\ldots,v_{n-1}$, and one-edge layers $E_t=\{cv_t\}$ in this order.
+For $n\ge3$,
+\[
+ Z_{\LL}(\calS_n)=1,
+ \qquad
+ Z_{\FC}(\calS_n)=Z(K_{1,n-1})=n-2.
+\]
+\end{proposition}
+
+\begin{proof}
+For the layer-local rule, seed the center; it forces one leaf in every layer.
+The footprint-constrained number is at least the static number
+$Z(K_{1,n-1})=n-2$: at most one leaf can be omitted from a static forcing
+set, because two white leaves leave the center unable to distinguish either;
+seeding all but one leaf is sufficient.  For temporal equality, seed
+$v_1,\ldots,v_{n-2}$.  Vertex $v_1$ forces $c$ in the first layer, and at the
+last layer $c$ has only $v_{n-1}$ white and forces it.
+\end{proof}
+
+\begin{corollary}[Maximum additive aggregation overestimate]\label{cor:maxgap}
+For every $n\ge3$ there is a temporal graph $\calK_n$ with
+\[
+ Z_{\LL}(\calK_n)=1,
+ \qquad
+ Z_{\FC}(\calK_n)=Z(K_n)=n-1.
+\]
+Consequently, the additive overestimate
+$Z(H)-Z_{\LL}(\calG)$ can attain its maximum possible value $n-2$.
+\end{corollary}
+
+\begin{proof}
+First serialize the $n-1$ edges from a center $c$ to the other vertices, and
+then place every remaining edge of $K_n$ in its own later layer.  Seeding $c$
+colors every other vertex during the initial star layers, so the later layers
+are irrelevant to layer-local forcing.  The footprint is $K_n$, whose static
+zero-forcing number is $n-1$.  The footprint lower bound gives
+$Z_{\FC}\ge n-1$.  For the reverse inequality, seed every vertex except the
+last star leaf.  At its star layer, $c$ has that leaf as its unique white
+footprint neighbor and the corresponding edge is active, so $c$ forces it.
+Finally, if a footprint has an edge then $Z(H)\le n-1$ and
+$Z_{\LL}\ge1$; for an edgeless footprint both numbers equal $n$.
+\end{proof}
+
+Static zero-forcing chains can be reversed to obtain a zero-forcing set of
+the same size~\cite{barioli2010}.  The next result shows that this operation
+survives the temporal schedule under footprint-constrained forcing.
+
+\begin{theorem}[Footprint-constrained reversal]\label{thm:reversal}
+For every temporal graph,
+\[
+ Z_{\FC}(\calG)=Z_{\FC}(\rev(\calG)).
+\]
+\end{theorem}
+
+\begin{proof}
+Take a successful forward process and choose one parent force for every newly
+blue vertex, discarding duplicate forces to the same target.  By footprint
+uniqueness, every vertex has at most one selected outgoing force; every
+nonseed has one selected incoming force.  The selected arcs are therefore
+vertex-disjoint directed paths or directed cycles.  Their time labels increase strictly along
+each directed walk because a newly colored vertex cannot force in the same
+round.  In particular, there is no directed cycle, so all components are
+paths.  Every path has exactly
+one original seed and one terminal vertex, so the number of terminals equals
+the number of seeds.
+
+Seed the reversed process with the terminal vertices of these paths and
+reverse every arc $x\to y$ used at time $t$ to $y\to x$ at time
+$T+1-t$.  We verify this schedule by induction over decreasing forward time
+labels.  Vertex $y$ is already blue then, either because it is terminal or
+because its later forward outgoing arc has already been reversed.  Let
+$w\in N_H(y)\setminus\{x\}$.  If $w$ has no selected outgoing force, it is a
+terminal vertex and hence a seed of the reversed process.  Otherwise let
+$w\to z$ occur at forward time $s$.  If $s<t$, then $y$ was white before
+time $s$; footprint uniqueness forces $z=y$, so $y$ would become blue at
+time $s$, contradicting the selected force $x\to y$ at time $t$.  If $s=t$,
+the source $w$ can have only the unique target $y$; after selecting $x\to y$
+as the parent of $y$, the duplicate $w\to y$ is not selected, contradicting
+the assumption that $w$ has a selected outgoing force.  Hence $s>t$, so
+$z\to w$ has already
+occurred in the prescribed reverse schedule.  Thus every footprint neighbor
+of $y$ other than $x$ is blue.  At reverse time $T+1-t$, either $x$ has
+already become blue through an additional deterministic force, or $x$ is the
+unique white footprint neighbor of $y$ and the active edge $xy$ forces it.
+By blue-set monotonicity, additional forces can only help; all prescribed
+targets are therefore blue by their scheduled reverse times.  This proves
+$Z_{\FC}(\rev(\calG))\le Z_{\FC}(\calG)$; reversing twice gives equality.
+\end{proof}
+
+Theorem~\ref{thm:binomial} shows that no analogous result holds for the
+layer-local rule: its reversal ratio can be $n/2$.
+
+\section{Computational complexity and parameterized algorithms}
+
+The decision problem \textnormal{\textsc{LL-TZF}} asks whether
+$Z_{\LL}(\calG)\le K$.  Membership in NP follows by simulating the
+deterministic process.
+
+\begin{theorem}[Restricted hardness]\label{thm:hardness}
+\textnormal{\textsc{LL-TZF}} is NP-complete even when every layer has one nontrivial
+component that is a star, every footprint edge appears in exactly one layer,
+and the footprint is bipartite.  Parameterized by $K$, it is W[2]-hard.
+The reduction satisfies
+\[
+ \operatorname{OPT}_{\textnormal{\textsc{LL-TZF}}}
+ =\operatorname{OPT}_{\textnormal{\textsc{Set Cover}}}+1.
+\]
+\end{theorem}
+
+\begin{proof}
+Let a Set Cover instance have universe
+$U=\{e_1,\ldots,e_p\}$ and sets $\mathcal F=\{F_1,\ldots,F_m\}$, with
+every element occurring in a set.  Create vertices
+\[
+ \{c,a\}\cup\{s_1,\ldots,s_m\}\cup\{x_1,\ldots,x_p\}.
+\]
+The first layer is the edge $ca$.  For each element $e_j$, the next layer is
+the star centered at $x_j$ with leaves $s_i$ for which $e_j\in F_i$.
+Finally, for $i=1,\ldots,m$, add a one-edge cleanup layer $cs_i$.  Every edge
+appears once, and the footprint is bipartite with parts
+$\{c,x_1,\ldots,x_p\}$ and $\{a,s_1,\ldots,s_m\}$.
+
+If $C$ is a cover, seed $c$ and the set vertices corresponding to $C$.
+Vertex $c$ first forces $a$.  At each element layer, a seeded incident set
+vertex forces the center $x_j$.  The cleanup layers let $c$ force all
+remaining set vertices.  This gives a temporal forcing set of size
+$|C|+1$.
+
+Conversely, let $S$ be feasible.  At least one of $c,a$ is seeded, since $a$
+has no active edge after the first layer.  Let $P$ index the set vertices
+that are blue before cleanup.  Such a set vertex is either seeded or was
+forced in an element layer by its center.  A center performing that force
+must itself be seeded, because it has no earlier incident edge.  A center
+forced during its own element layer cannot force back in that layer under the
+synchronous update convention; moreover, any seeded center can force at most
+one set vertex.  Therefore the vertices indexed by $P$ can
+be injectively charged to seeds outside $\{c,a\}$.
+
+If element $e_j$ is not contained in any set indexed by $P$, then no incident
+set vertex was blue at its layer.  Hence $x_j$ must be seeded.  It was not
+used in the preceding charge, since forcing an incident set vertex would put
+a set containing $e_j$ into $P$.  For every such uncovered element, choose
+one arbitrary containing set.  Together with the sets indexed by $P$, these
+choices form a cover of size at most $|S|-1$.  Thus the optima differ by
+exactly one.  The transformation sends $k$ to $k+1$; parameterized Set Cover
+is W[2]-complete~\cite{downeyfellows2013}, establishing W[2]-hardness.
+\end{proof}
+
+Using the classical NP-complete Vertex Cover problem~\cite{gareyjohnson1979}
+as the incidence instance makes every element star a $P_3$, yielding
+NP-completeness even when every layer has at most two edges.
+
+\begin{theorem}[Seed-budget--lifetime algorithms]\label{thm:fpt}
+Both temporal zero-forcing problems are fixed-parameter tractable in
+$k+T$.  More precisely, after a growth-bound rejection, exhaustive seed
+enumeration runs in
+\[
+ 2^{O(k(T+1))}\operatorname{poly}(|I|)
+\]
+for layer-local forcing and
+\[
+ 2^{O(k\log(T+1))}\operatorname{poly}(|I|)
+\]
+for footprint-constrained forcing.  The resulting vertex kernels have
+$k2^T$ and $k(T+1)$ vertices, respectively; under explicit layer encoding,
+the second is a polynomial kernel in $k+T$.
+\end{theorem}
+
+\begin{proof}
+For a nonempty instance, $k=0$ is immediately a no instance.  Now suppose
+$k\ge1$.  First observe that the final blue set is monotone in the seed set.
+Indeed,
+if $B\subseteq B'$, any force available from $B$ either has its target already
+in $B'$ or remains available because enlarging the blue set can only remove
+white neighbors.  Induction over the layers proves monotonicity for both
+semantics.  Thus a solution of size at most $k<n$ can be extended to one of
+size exactly $k$; if $k\ge n$, the instance is trivially feasible.
+
+By Theorem~\ref{thm:growth}, reject a layer-local instance if $n>k2^T$.
+Otherwise enumerate the $k$-subsets.  The standard binomial bound
+$\binom{n}{k}\le(en/k)^k$ gives $2^{O(k(T+1))}$ candidates.  For the
+footprint-constrained problem reject if $n>k(T+1)$; the same estimate gives
+$(e(T+1))^k=2^{O(k\log(T+1))}$ candidates.  Each candidate is checked by
+direct simulation in polynomial time.  If the size test passes, retaining
+the instance gives the stated vertex bounds; otherwise output a fixed no
+instance.  With an explicit temporal edge list, $T[k(T+1)]^2$ bounds the
+encoding size of the footprint-constrained kernel by a polynomial in $k+T$.
+\end{proof}
+
+\section{Computational methods and verification}
+
+We implemented the two synchronous updates directly from their definitions,
+without encoding the closed forms, and enumerated seed sets in increasing
+cardinality.  The implementation also
+computes ordinary static zero forcing by repeated closure.  The checked
+instances comprise
+
+\begin{itemize}[leftmargin=*]
+  \item alternating paths through $n=20$;
+  \item alternating even cycles through $n=22$;
+  \item forward and reversed binomial temporal trees through $T=4$
+  ($n=16$);
+  \item serialized temporal stars through $n=12$; and
+  \item completed serialized cliques through $n=8$.
+\end{itemize}
+
+All 127 recorded parameter values matched their corresponding predicted
+values.  The code
+records an optimum witness for every instance and writes machine-readable
+CSV and JSON results.  It additionally exhausts all 4,096 two-layer temporal graphs on
+four labeled vertices to check dominance and footprint-constrained reversal
+invariance (S1 File).  These computations are verification rather than evidence used
+in place of proof.
+
+\section{Discussion}
+
+The semantic choice determines whether time-varying neighborhoods create
+branching or merely schedule static deductions.  Layer-local forcing can
+exploit temporarily absent edges, so it may be dramatically easier than
+forcing on the aggregate graph.  The same deadline can also make it
+dramatically harder, as the alternating paths demonstrate.
+Footprint-constrained forcing is more conservative: it always begins with a
+static zero-forcing set, has no branching, and is time-reversal invariant.
+
+These distinctions caution against assigning a single ``temporal zero
+forcing number'' without specifying (i) the neighborhood in which uniqueness
+is evaluated, (ii) whether layers permit one round or closure, and (iii)
+whether simultaneous eligibility uses the pre-round coloring.  Our results
+use one synchronous round per layer.  Because the exact path and cycle layers
+are matchings, allowing closure within those individual layers would not
+change their values, but it changes the general model.
+
+A next structural problem is an explicit dynamic program on temporally
+labeled paths and trees beyond the alternating families.  A second direction
+is to identify a precisely stated time-varying matrix class for which one of
+the parameters provides a sound controllability certificate.  Existing
+temporal controllability results mean that such a connection must be proved,
+not inferred from the static interpretation.
+
+\section{Conclusion}
+
+Zero forcing on a temporal graph has at least two natural meanings.  Evaluating
+uniqueness in the current layer allows repeated branching and strong temporal
+asymmetry; evaluating it in the footprint preserves static forcing chains and
+time-reversal symmetry.  Exact families, aggregation gaps, complexity, and
+parameterized algorithms show that this distinction is mathematical rather
+than terminological.  The results provide a starting point for further work on
+temporal graph classes and carefully delimited control applications.
+
+\section*{Data and code availability}
+
+All code and machine-readable results underlying the computational verification
+are publicly available from the
+\href{https://github.com/krishnatheaverage/temporal-zero-forcing}{development
+repository on GitHub}.  The same verification materials are provided as S1
+File.  No external datasets were used.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\section*{Supporting information}
+
+\noindent\textbf{S1 File. Code and machine-readable verification results.}
+ZIP archive containing the Python verification script, generated CSV and JSON results,
+reproduction instructions, tested Python version, and MIT license.
+
+\end{document}
